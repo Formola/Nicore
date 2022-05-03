@@ -1,1 +1,1 @@
-echo "# Nicore" 
+Nicore 
