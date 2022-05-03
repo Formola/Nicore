@@ -29,7 +29,7 @@ void setup() {
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
 
-  send_to_server("value=80");
+  send_to_server("value=80");   //test per vedere se funziona la post
 }
 
 void send_to_server(String postData) {
@@ -54,5 +54,5 @@ void send_to_server(String postData) {
 
 void loop() { 
 
-  //qui andrebbe la vera post coi bpm inviati da arduino
+  //qui andrebbe la vera post coi bpm inviati da arduino , UART ???
 }

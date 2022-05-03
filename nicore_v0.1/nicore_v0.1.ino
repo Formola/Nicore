@@ -14,9 +14,6 @@
     FOTODIODO** = è un diodo atto a rilevare della luce utilizzato per la conversione di una certa quantita di luce in tensione
          o corrente a seconda del dispositivo
 */
-#include <SoftwareSerial.h>
-
-SoftwareSerial esp8266(5,6);
 
 int ky039 = A0;
 
@@ -32,7 +29,6 @@ long tempoBPM = millis();
 
 void setup() {
   Serial.begin(9600);
-  esp8266.begin(9600);
   Serial.println("Ciao, stai utilizzando <3 NICORE <3");
 }
 
@@ -83,7 +79,6 @@ void loop() {
   if ( millis() >= tempoBPM + 15000 ) {  //i num battiti che ho calcolato sono quelli misurati durante tempoBPM+15 secondi
     Serial.print("BPM : ");
     Serial.println(num_battiti * 4);  //devo moltiplicare i num battiti attuali per 4 per arrivare a 60 secondi e ricavare i bpm
-    esp8266.write(num_battiti*4);
     tempoBPM = millis(); 
     num_battiti = 0;  //azzera il num battiti per effettuare una prossima misura nei prossimi 5 secondi
   }
