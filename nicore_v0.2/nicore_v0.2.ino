@@ -14,6 +14,9 @@
     FOTODIODO** = è un diodo atto a rilevare della luce utilizzato per la conversione di una certa quantita di luce in tensione
          o corrente a seconda del dispositivo
 */
+#include <SoftwareSerial.h>
+
+SoftwareSerial esp(5,6); //RX e TX
 
 int ky039 = A0;
 
@@ -27,8 +30,11 @@ int tempo_min_battiti = 300;  //valore minimo di tempo per la misurazione dei ba
 long tempo_inizio_battiti = millis();
 long tempoBPM = millis();
 
+int bpm = 0; 
+
 void setup() {
   Serial.begin(9600);
+  esp.begin(115200);
   Serial.println("Ciao, stai utilizzando <3 NICORE <3");
 }
 
@@ -77,8 +83,16 @@ void loop() {
   checkBattito = checkBattito * 0.97;  //se non è avvenuto un battito decrementa di poco il valoreMassimo , se è avvenuto il battito decrementa di poco la differenza
 
   if ( millis() >= tempoBPM + 15000 ) {  //i num battiti che ho calcolato sono quelli misurati durante tempoBPM+15 secondi
-    Serial.print("BPM : ");
-    Serial.println(num_battiti * 4);  //devo moltiplicare i num battiti attuali per 4 per arrivare a 60 secondi e ricavare i bpm
+    bpm = num_battiti*4;
+
+    if ( bpm < 45 ) {
+      Serial.println("Riposiziona dito");
+    } else {
+        Serial.print("BPM : ");
+        Serial.println(bpm);  //devo moltiplicare i num battiti attuali per 4 per arrivare a 60 secondi e ricavare i bpm
+        esp.write(bpm);
+      }
+    
     tempoBPM = millis(); 
     num_battiti = 0;  //azzera il num battiti per effettuare una prossima misura nei prossimi 5 secondi
   }

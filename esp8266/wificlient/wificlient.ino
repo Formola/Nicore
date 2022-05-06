@@ -5,9 +5,11 @@
 const char* ssid     = "Nicore";         // The SSID (name) of the Wi-Fi network you want to connect to 
 const char* password = "12345678";     // The password of the Wi-Fi network
 
-const char* post_link = "http://192.168.118.38:80/Nicore/server.php";   //la stessa SUBNET
+const char* post_link = "http://192.168.248.38:80/Nicore/server.php";   //la stessa SUBNET
 
 WiFiClient client;
+
+int bpm = 0;
 
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
@@ -29,7 +31,7 @@ void setup() {
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
 
-  send_to_server("value=80");   //test per vedere se funziona la post
+  send_to_server("value=75");   //test per vedere se funziona la post
 }
 
 void send_to_server(String postData) {
@@ -54,5 +56,12 @@ void send_to_server(String postData) {
 
 void loop() { 
 
-  //qui andrebbe la vera post coi bpm inviati da arduino , UART ???
+  if ( Serial.available() > 0 ) {
+    bpm = Serial.read();
+    
+    Serial.print("BPM : ");
+    Serial.println(bpm);
+    send_to_server("value="+ String(bpm)); 
+  }
+
 }
