@@ -27,9 +27,16 @@
     });
 </script>
 
+<!DOCTYPE html>
 <html>
 
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.2/css/bulma.css" rel="stylesheet"/>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
         <title>Nicore Webpage</title>
         <script>
             window.onload = function () {
@@ -56,9 +63,12 @@
 
     <body>
 
-    <h1>NICORE</h1>
-
-    <p>Benvenuto su nicore.</p>
+    <div style="text-align: center;">
+    
+        <span style="font-size: 300%;color:red; display: inline-block; ">&hearts;</span>
+        <h1 class="title is-2" style="color: red; display: inline-block; font-family: Courier New, Courier, monospace">NICORE</h1>
+        <span style="font-size: 300%;color:red; display: inline-block;">&hearts;</span>
+    </div>
 
     <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -68,8 +78,11 @@
             <label>Inserisci soglia rischio bpm:</label>
             <input name="bpmform" type="number">
             <input type="submit">
+            <span style="font-size: 25  px;color:red; display: inline-block; ">&hearts;</span>
         </form>
+
     </div>
+
 
     <div style="align: center; display: inline-block; margin-left: 50px";>
         <h3>Storico battiti cardiaci nelle ultime 24h</h3>

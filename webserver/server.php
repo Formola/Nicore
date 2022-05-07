@@ -53,16 +53,25 @@
 
     if(isset($_GET["type"])){
 
+        if ( $_GET["type"] == "get_threshold"){
+            $query_threshold = "SELECT threshold FROM letture ORDER BY ID DESC LIMIT 1;";
+            $result_get_threshold = sendQuery($query_threshold);
+            while($row = mysqli_fetch_array($result_get_threshold)){
+                echo strval($row['threshold']);
+            }
+            
+        }
+
         if ( $_GET["type"] == "get_bpm"){
             $query_bpm = "SELECT value,data,isWarning,threshold FROM `letture` WHERE data >= NOW() - INTERVAL 1 DAY ORDER BY data DESC";  //ultime 24h
             $result_get_bpm = sendQuery($query_bpm);
             echo ' 
-            <table border=2>
+            <table class="table is-bordered" border=2>
                 <tr>
-                    <th>value</th>
+                    <th>value <span style="font-size: 15px;color:red; display: inline-block; ">&hearts;</span></th>
                     <th>data</th>
                     <th>isWarning</th>
-                    <th>threshold</th>
+                    <th>threshold <span style="font-size: 20px;color:black; display: inline-block; ">&#9760;;</span>    </th>
                 </tr>
             ';
             while($row = mysqli_fetch_array($result_get_bpm)){
@@ -80,12 +89,12 @@
             $warning_query = "SELECT * FROM `letture` WHERE isWarning = true AND data ORDER BY data DESC";
             $warning_result = sendQuery($warning_query);
             echo ' 
-            <table border=2>
+            <table class="table is-bordered" border=2>
                 <tr>
-                    <th>value</th>
+                    <th>value <span style="font-size: 15px;color:red; display: inline-block; ">&hearts;</span></th>
                     <th>data</th>
                     <th>isWarning</th>
-                    <th>threshold</th>
+                    <th>threshold <span style="font-size: 20px;color:black; display: inline-block; ">&#9760;;</span></th>
                 </tr>
             ';
             while($row = mysqli_fetch_array($warning_result)){

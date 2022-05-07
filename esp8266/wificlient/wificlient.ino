@@ -6,6 +6,7 @@ const char* ssid     = "Nicore";         // The SSID (name) of the Wi-Fi network
 const char* password = "12345678";     // The password of the Wi-Fi network
 
 const char* post_link = "http://192.168.248.38:80/Nicore/server.php";   //la stessa SUBNET
+const char* serverName = "http://192.168.248.38:80/Nicore/server.php?type=get_threshold";
 
 WiFiClient client;
 
@@ -31,8 +32,23 @@ void setup() {
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
 
-  send_to_server("value=75");   //test per vedere se funziona la post
+  //send_to_server("value=75");   //test per vedere se funziona la post
 }
+
+void loop() { 
+
+  if ( Serial.available() > 0 ) {
+    bpm = Serial.read();
+    
+    Serial.print("BPM : ");
+    Serial.println(bpm);
+    send_to_server("value="+ String(bpm)); 
+  }
+
+  get_from_server(serverName);
+
+}
+
 
 void send_to_server(String postData) {
   HTTPClient http;    //Declare object of class HTTPClient
@@ -51,17 +67,37 @@ void send_to_server(String postData) {
   {
     Serial.println("Error in WiFi connection");
   }
-
 }
 
-void loop() { 
+void get_from_server(const char* serverName){
+  String threshold;
+  if(WiFi.status()==WL_CONNECTED){
+    threshold = httpGETRequest(serverName);
+    Serial.println("the threshold is "+threshold);
+  } else {
+    Serial.println("Error in wifi connection");
+    }
+    delay(500);
+}
 
-  if ( Serial.available() > 0 ) {
-    bpm = Serial.read();
-    
-    Serial.print("BPM : ");
-    Serial.println(bpm);
-    send_to_server("value="+ String(bpm)); 
-  }
+String httpGETRequest(const char* serverName){
+  WiFiClient client;
+  HTTPClient http;
 
+  http.begin(client,serverName);
+
+  int httpResponseCode = http.GET();
+
+  String payload = "";
+
+  if ( httpResponseCode>0){
+    Serial.print("HTTP Responde code: ");
+    Serial.println(httpResponseCode);
+    payload = http.getString();
+  } else {
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode);
+    }
+    http.end();
+    return payload;
 }
