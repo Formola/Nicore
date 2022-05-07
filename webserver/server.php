@@ -33,7 +33,7 @@
             $warning = true;
         } else { $warning = false;}
 
-        $query = "INSERT INTO `letture` (`ID`, `value`, `data`, `isWarning`) VALUES (NULL, ".$_POST["value"]." , current_timestamp() , '$warning')";
+        $query = "INSERT INTO `letture` (`ID`, `value`, `data`, `isWarning` , `threshold`) VALUES (NULL, ".$_POST["value"]." , current_timestamp() , '$warning' , $soglia_bpm)";
         sendQuery($query);
         $warning = false;
     }
@@ -54,7 +54,7 @@
     if(isset($_GET["type"])){
 
         if ( $_GET["type"] == "get_bpm"){
-            $query_bpm = "SELECT value,data,isWarning FROM `letture` WHERE 1";
+            $query_bpm = "SELECT value,data,isWarning,threshold FROM `letture` WHERE data >= NOW() - INTERVAL 1 DAY ORDER BY data DESC";  //ultime 24h
             $result_get_bpm = sendQuery($query_bpm);
             echo ' 
             <table border=2>
@@ -62,6 +62,7 @@
                     <th>value</th>
                     <th>data</th>
                     <th>isWarning</th>
+                    <th>threshold</th>
                 </tr>
             ';
             while($row = mysqli_fetch_array($result_get_bpm)){
@@ -69,15 +70,33 @@
                 echo '<td>' .$row['value']. '</td>';
                 echo '<td>' .$row['data']. '</td>';
                 echo '<td>' .$row['isWarning']. '</td>';
+                echo '<td>' .$row['threshold']. '</td>';
                 echo '</tr>';
             }
             echo '</table>';
         }
 
         if ( $_GET["type"] == "get_measures_with_warning" ) {
-            $query = "SELECT * FROM `letture` WHERE isWarning = true";
-            $result_get = sendQuery($query);
-            echo mysqli_fetch_array($result_get)[1];
+            $warning_query = "SELECT * FROM `letture` WHERE isWarning = true AND data ORDER BY data DESC";
+            $warning_result = sendQuery($warning_query);
+            echo ' 
+            <table border=2>
+                <tr>
+                    <th>value</th>
+                    <th>data</th>
+                    <th>isWarning</th>
+                    <th>threshold</th>
+                </tr>
+            ';
+            while($row = mysqli_fetch_array($warning_result)){
+                echo '<tr>';
+                echo '<td>' .$row['value']. '</td>';
+                echo '<td>' .$row['data']. '</td>';
+                echo '<td>' .$row['isWarning']. '</td>';
+                echo '<td>' .$row['threshold']. '</td>';
+                echo '</tr>';
+            }
+            echo '</table>'; 
 
         }
 
