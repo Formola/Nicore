@@ -35,6 +35,23 @@
 
         $query = "INSERT INTO `letture` (`ID`, `value`, `data`, `isWarning` , `threshold`) VALUES (NULL, ".$_POST["value"]." , current_timestamp() , '$warning' , $soglia_bpm)";
         sendQuery($query);
+
+        $bpm_json = file_get_contents('data.json');
+        $decoded_json = json_decode($bpm_json,true);
+
+        $get_id = "SELECT ID,data FROM `letture` WHERE data ORDER BY ID DESC LIMIT 1;";
+        $result_get_id = sendQuery($get_id);
+
+        while($row = mysqli_fetch_array($result_get_id)){
+            echo $row['ID'];
+            $decoded_json[$row['ID']]  = [$row['data'],$_POST["value"]];
+        }
+
+        $f = fopen("data.json", "w");
+        fwrite($f, json_encode($decoded_json));
+        fclose($f);
+        print_r($decoded_json);
+
         $warning = false;
     }
     
@@ -54,13 +71,9 @@
     if(isset($_GET["type"])){
 
         if ( $_GET["type"] == "get_threshold"){
-            $query_threshold = "SELECT threshold FROM letture ORDER BY ID DESC LIMIT 1;";
-            $result_get_threshold = sendQuery($query_threshold);
-            while($row = mysqli_fetch_array($result_get_threshold)){
-                echo strval($row['threshold']);
-            }
-            
+            echo $soglia_bpm;
         }
+
 
         if ( $_GET["type"] == "get_bpm"){
             $query_bpm = "SELECT value,data,isWarning,threshold FROM `letture` WHERE data >= NOW() - INTERVAL 1 DAY ORDER BY data DESC";  //ultime 24h

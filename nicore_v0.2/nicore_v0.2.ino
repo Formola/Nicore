@@ -31,6 +31,7 @@ long tempo_inizio_battiti = millis();
 long tempoBPM = millis();
 
 int bpm = 0; 
+int threshold = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -96,5 +97,6 @@ void loop() {
     tempoBPM = millis(); 
     num_battiti = 0;  //azzera il num battiti per effettuare una prossima misura nei prossimi 5 secondi
   }
+
   delay(50);
 }

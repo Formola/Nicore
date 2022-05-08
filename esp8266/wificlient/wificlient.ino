@@ -2,6 +2,9 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 
+int buttonPin = D2;
+int buzzer = D4;
+
 const char* ssid     = "Nicore";         // The SSID (name) of the Wi-Fi network you want to connect to 
 const char* password = "12345678";     // The password of the Wi-Fi network
 
@@ -11,9 +14,12 @@ const char* serverName = "http://192.168.248.38:80/Nicore/server.php?type=get_th
 WiFiClient client;
 
 int bpm = 0;
+String threshold = "";
 
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(buzzer,OUTPUT);
   delay(10);
   Serial.println('\n');
   
@@ -33,20 +39,31 @@ void setup() {
   Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
 
   //send_to_server("value=75");   //test per vedere se funziona la post
+
+  threshold = get_from_server(serverName);
 }
+
 
 void loop() { 
 
   if ( Serial.available() > 0 ) {
     bpm = Serial.read();
-    
     Serial.print("BPM : ");
     Serial.println(bpm);
-    send_to_server("value="+ String(bpm)); 
+    send_to_server("value="+ String(bpm));
+    if( bpm>threshold.toInt()){
+      tone(buzzer,500,500);
+      delay(300);
+    } 
   }
 
-  get_from_server(serverName);
+  if ( digitalRead(buttonPin) == LOW ){
+    Serial.println("bottone premuto");
+    threshold = get_from_server(serverName);
+  }
 
+  noTone(buzzer);
+  
 }
 
 
@@ -60,7 +77,7 @@ void send_to_server(String postData) {
     int httpCode = http.POST(postData);   //Send the request
     //Serial.println(httpCode);   //Print HTTP return code
     http.end();  //Close connection
-    Serial.println(postData);
+    //Serial.println(postData);
   }
 
   else
@@ -69,15 +86,16 @@ void send_to_server(String postData) {
   }
 }
 
-void get_from_server(const char* serverName){
+String get_from_server(const char* serverName){
   String threshold;
   if(WiFi.status()==WL_CONNECTED){
     threshold = httpGETRequest(serverName);
-    Serial.println("the threshold is "+threshold);
+    Serial.println("Threshold : "+threshold);
   } else {
     Serial.println("Error in wifi connection");
     }
     delay(500);
+    return threshold;
 }
 
 String httpGETRequest(const char* serverName){
@@ -91,12 +109,12 @@ String httpGETRequest(const char* serverName){
   String payload = "";
 
   if ( httpResponseCode>0){
-    Serial.print("HTTP Responde code: ");
-    Serial.println(httpResponseCode);
+    //Serial.print("HTTP Responde code: ");
+    //Serial.println(httpResponseCode);
     payload = http.getString();
   } else {
     Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
+    Serial.println(httpResponseCode); 
     }
     http.end();
     return payload;

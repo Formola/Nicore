@@ -18,6 +18,17 @@
     curl_close($c);
 ?>
 
+<?php 
+    $c = curl_init('http://localhost:80/Nicore/server.php?type=get_threshold');
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+    $txt = curl_exec($c);
+    if (curl_error($c))
+        die(curl_error($c));
+    //$status = curl_getinfo($c, CURLINFO_HTTP_CODE);
+    curl_close($c);
+?>
+
+
 <script>  //test per provare a rimanere sulla stessa pagina
     $(function(){
         $('#bpmform').submit(function(event) {
@@ -26,6 +37,22 @@
         });
     });
 </script>
+
+<script>
+    var target_popup = function(form){
+        window.open('',
+                    'UniqueWindowName',
+                    'width=400 , heigh;400, resizeable,scrollbars');
+        form.target = 'UniqueWindowName';
+    }
+</script>
+
+<script language="JavaScript">
+    function showInput() {
+        document.getElementById('display').innerHTML = 
+                    document.getElementById("user_input").value;
+    }
+  </script>
 
 <!DOCTYPE html>
 <html>
@@ -74,16 +101,19 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
     <div style="margin-top : 50px">
-        <form id="bpmform" action="http://localhost:80/Nicore/server.php" method="POST" target="_blank""">
-            <label>Inserisci soglia rischio bpm:</label>
-            <input name="bpmform" type="number">
-            <input type="submit">
-            <span style="font-size: 25  px;color:red; display: inline-block; ">&hearts;</span>
+        <form id="bpmform" action="http://localhost:80/Nicore/server.php" method="POST" target="ifrm1" onsumbit="target_popup(this)">
+            <label style="margin-left: 20px">Inserisci soglia rischio bpm:</label>
+            <input name="bpmform" type="number" id="user_input">
+            <input type="submit" onclick="showInput()">
+            <span style="font-size: 25px;color:red; display: inline-block; ">&hearts;</span><br></br>
+            <p style="margin-left: 20px">Valore soglia aggiornato a : <span id='display'><?php echo $txt; ?></span> bpm</p>
+            
         </form>
+        <iframe id="ifrm1" name="ifrm1" style="display:none"></iframe>
 
     </div>
 
-
+    <br></br>
     <div style="align: center; display: inline-block; margin-left: 50px";>
         <h3>Storico battiti cardiaci nelle ultime 24h</h3>
             <?php
