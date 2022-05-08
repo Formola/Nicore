@@ -58,7 +58,6 @@ void loop() {
   }
 
   if ( digitalRead(buttonPin) == LOW ){
-    Serial.println("bottone premuto");
     threshold = get_from_server(serverName);
   }
 
