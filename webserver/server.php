@@ -43,14 +43,18 @@
         $result_get_id = sendQuery($get_id);
 
         while($row = mysqli_fetch_array($result_get_id)){
-            echo $row['ID'];
-            $decoded_json[$row['ID']]  = [$row['data'],$_POST["value"]];
+            array_push($decoded_json,(object)[
+                
+                'time' => $row['data'],
+                'value' => (int)$_POST["value"]
+            
+            ]);
         }
 
         $f = fopen("data.json", "w");
-        fwrite($f, json_encode($decoded_json));
+        fwrite($f, json_encode($decoded_json, JSON_PRETTY_PRINT));
         fclose($f);
-        print_r($decoded_json);
+        //print_r($decoded_json);
 
         $warning = false;
     }

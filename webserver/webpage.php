@@ -28,16 +28,6 @@
     curl_close($c);
 ?>
 
-
-<script>  //test per provare a rimanere sulla stessa pagina
-    $(function(){
-        $('#bpmform').submit(function(event) {
-            event.preventDefault();
-            $(this).submit();
-        });
-    });
-</script>
-
 <script>
     var target_popup = function(form){
         window.open('',
@@ -63,29 +53,42 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.2/css/bulma.css" rel="stylesheet"/>
         <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+        <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+        <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script></script>
 
         <title>Nicore Webpage</title>
+
         <script>
             window.onload = function () {
             
+            var dataPoints = [];
+
             var chart = new CanvasJS.Chart("chartContainer", {
                 animationEnabled: true,
                 theme: "light2",
                 title:{
-                    text: "Simple Line Chart"
+                    text: "STAI VISUALIZZANDO IL TUO CUORE NICOLA"
                 },
                 data: [{        
                     type: "line",
-                      indexLabelFontSize: 16,
-                    dataPoints: [
-                        { y: 450 },
-                    ]
+                    indexLabelFontSize: 16,
+                    dataPoints: dataPoints,
                 }]
             });
-            chart.render();
-            
+
+            function addData(data) {
+                var dps = data;
+                for ($i in dps) {
+                    dataPoints.push({
+                        label: dps[$i].time,
+                        y: dps[$i].value,
+                    });
+                }
+                chart.render();
             }
-            </script>
+            $.getJSON("http://localhost/Nicore/data.json", addData);
+        }
+        </script>
     </head>
 
     <body>
@@ -98,7 +101,6 @@
     </div>
 
     <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
     <div style="margin-top : 50px">
         <form id="bpmform" action="http://localhost:80/Nicore/server.php" method="POST" target="ifrm1" onsumbit="target_popup(this)">
