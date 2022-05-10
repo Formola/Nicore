@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>        // Include the Wi-Fi library
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
+#include <SoftwareSerial.h>
 
 int buttonPin = D2;
 int buzzer = D4;
@@ -13,6 +14,8 @@ const char* serverName = "http://192.168.248.38:80/Nicore/server.php?type=get_th
 
 WiFiClient client;
 
+SoftwareSerial mySerial(D5,D6); //RX e TX
+
 int bpm = 0;
 String threshold = "";
 
@@ -22,6 +25,7 @@ void setup() {
   pinMode(buzzer,OUTPUT);
   delay(10);
   Serial.println('\n');
+  mySerial.begin(115200);
   
   WiFi.begin(ssid, password);             // Connect to the network
   Serial.print("Connecting to ");
@@ -46,8 +50,8 @@ void setup() {
 
 void loop() { 
 
-  if ( Serial.available() > 0 ) {
-    bpm = Serial.read();
+  if ( mySerial.available() > 0 ) {
+    bpm = mySerial.read();
     Serial.print("BPM : ");
     Serial.println(bpm);
     send_to_server("value="+ String(bpm));
@@ -60,9 +64,7 @@ void loop() {
   if ( digitalRead(buttonPin) == LOW ){
     threshold = get_from_server(serverName);
   }
-
   noTone(buzzer);
-  
 }
 
 
