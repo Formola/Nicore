@@ -88,7 +88,7 @@
                     <th>value <span style="font-size: 15px;color:red; display: inline-block; ">&hearts;</span></th>
                     <th>data</th>
                     <th>isWarning</th>
-                    <th>threshold <span style="font-size: 20px;color:black; display: inline-block; ">&#9760;;</span>    </th>
+                    <th>threshold <span style="font-size: 20px;color:black; display: inline-block; ">&#9760;</span>    </th>
                 </tr>
             ';
             while($row = mysqli_fetch_array($result_get_bpm)){
@@ -111,7 +111,7 @@
                     <th>value <span style="font-size: 15px;color:red; display: inline-block; ">&hearts;</span></th>
                     <th>data</th>
                     <th>isWarning</th>
-                    <th>threshold <span style="font-size: 20px;color:black; display: inline-block; ">&#9760;;</span></th>
+                    <th>threshold <span style="font-size: 20px;color:black; display: inline-block; ">&#9760;</span></th>
                 </tr>
             ';
             while($row = mysqli_fetch_array($warning_result)){
@@ -123,7 +123,15 @@
                 echo '</tr>';
             }
             echo '</table>'; 
+        }
 
+        if ( $_GET["type"] == "get_last_bpm"){
+            $query_last_bpm = "SELECT value FROM `letture` ORDER BY ID DESC LIMIT 1;";
+            $result_query_last_bpm = sendQuery($query_last_bpm);
+            while($row = mysqli_fetch_array($result_query_last_bpm)){
+                echo $row['value'];
+            }
+            
         }
 
     }
@@ -131,7 +139,9 @@
     function leggi_soglia(){
         $soglia = 0;
         $file = fopen("soglia.txt" , "r") or die ("unable to open file");
-        $soglia = fread($file,filesize("soglia.txt"));
+        if(filesize("soglia.txt")>0){
+            $soglia = fread($file,filesize("soglia.txt"));
+        }
         fclose($file);
         return $soglia;
     }
