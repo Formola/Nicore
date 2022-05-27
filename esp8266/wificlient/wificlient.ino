@@ -9,8 +9,8 @@ int buzzer = D4;
 const char* ssid     = "Nicore";         // The SSID (name) of the Wi-Fi network you want to connect to 
 const char* password = "12345678";     // The password of the Wi-Fi network
 
-const char* post_link = "http://192.168.248.38:80/Nicore/server.php";   //la stessa SUBNET
-const char* serverName = "http://192.168.248.38:80/Nicore/server.php?type=get_threshold";
+const char* post_link = "http://192.168.235.38:80/Nicore/server.php";   //la stessa SUBNET
+const char* serverName = "http://192.168.235.38:80/Nicore/server.php?type=get_threshold";
 
 WiFiClient client;
 

@@ -59,7 +59,7 @@
             animationEnabled: true,
             theme: "light2",
             title:{
-                text: "STAI VISUALIZZANDO IL CUORE DI NICOLA"
+                text: "STAI VISUALIZZANDO IL TUO CUORE"
             },
             data: [{        
                 type: "line",
@@ -81,12 +81,10 @@
 
         $.getJSON("http://localhost/Nicore/data.json", addData);
 
-        var button = document.getElementById( "chart-button" );
-        button.addEventlistener("click", refreshChart); //refresh chart
-
-        function refreshChart(){
-            chart.render();
-        }
+        var button = document.getElementById("exportChart");
+        button.addEventListener("click",function(){
+    	chart.exportChart({format: "jpg"});
+        });
     }
 </script>
 
@@ -103,48 +101,48 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
         <link rel="icon" href="favicon.ico" type="image/ico">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <title>...❤Nicore❤...</title>
 
     </head>
 
     <body>
-    
-    <?php        /*
-        $message = "Attenzione...il tuo ultimo battito cardiaco ha superato la soglia fissata a :".' '.$txt;
-        if ( $last_bpm > $txt){
-            echo "<script type='text/javascript'>alert('$message');</script>";
-        } */
-    ?>
 
     <div style="text-align: center;">
         <span style="font-size: 300%;color:red; display: inline-block; ">&hearts;</span>
-        <h1 class="title is-2" style="color: red; display: inline-block; font-family: Courier New, Courier, monospace">NICORE</h1>
+        <h1 class="title is-2" style="color: red; display: inline-block; font-family: Courier New, Courier, monospace; font-size: 50px">NICORE</h1>
         <span style="font-size: 300%;color:red; display: inline-block;">&hearts;</span>
     </div>
 
-    <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto; align: center;"></div>
+    <div id="chartContainer" style="height: 400px; max-width: 1400px; margin: 0px auto; align: center;"></div>
+    
 
     <div style="text-align: center; margin-top: 25px">
-            <button id="chart-button" type="button" onClick="refreshPage()" class="button" style="height: 60px; width 200px; background-color: red; color: white  ">
-            &#8635 chart
+            <button id="chart-button" type="button" onClick="refreshPage()" class="button" style="height: 80px; width 200px; background-color: red; color: white; font-size: 30px ">
+            &#8635
             </button>
     </div>
 
         
 
     <div>
-        <form style="vertical-align: top; float: left" id="bpmform" action="http://localhost:80/Nicore/server.php" method="POST" target="ifrm1" onsumbit="target_popup(this)">
-            <label style="margin-left: 20px">Inserisci soglia rischio bpm:</label>
+        <form style="vertical-align: top; float: left; font-size: 20px" id="bpmform" action="http://localhost:80/Nicore/server.php" method="POST" target="ifrm1" onsumbit="target_popup(this)">
+            <label style="margin-left: 20px; font-size: 20px">Inserisci soglia rischio bpm:</label>
             <input name="bpmform" type="number" id="user_input">
             <input type="submit" onclick="showInput()">
             <span style="font-size: 25px;color:red; display: inline-block; ">&hearts;</span><br></br>
-            <p style="margin-left: 20px">Valore soglia aggiornato a : <span id='display'><?php echo $txt; ?></span> bpm</p> 
+            <p style="margin-left: 20px; font-size: 20px">Valore soglia aggiornato a : <span id='display'><?php echo $txt; ?></span> bpm</p> 
         </form>
 
-        <button type="button" onClick="refreshPage()" class="button-solid" style="background-color: transparent; border: none; margin-left: 600px">
-            <p style="font-size: 20px">Click on the heart to &#8635</p><span style="font-size: 100px;color: red; "><span>&#8594;</span>&hearts;<span>&#8592;</span></span><br></br>
+        <button id="exportChart" style="background-color: DodgerBlue; border: none; color: white; padding: 12px 30px; cursoir: pointer; margin-left: 600px; margin-bottom: 100px; font-size: 30px">
+            <i class="fa fa-download"></i> 
+             Download Chart
         </button>
+            
+            
+        
+        
 
         <iframe id="ifrm1" name="ifrm1" style="display:none"></iframe>
     </div>
